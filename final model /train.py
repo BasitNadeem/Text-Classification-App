@@ -81,14 +81,16 @@ def datafile(train_file, test_file):
         return train_file, test_file
 
 def Classification_Model():
-        model = fasttext.train_supervised('train.txt', autotuneValidationFile= 'test.txt')
+        model = fasttext.train_supervised('train.txt', lr=1.0, epoch=25, wordNgrams=2, bucket=200000, dim=50, loss='hs')
         model.test('test.txt')
         model.save_model('model.bin')
+        print(model.predict("johanna  und  der  buschpilot  der  weg  nach  afrika"))
         return model
 
 preprocess_data(train_data, test_data)
 datafile(train_data, test_data)
 
 Classification_Model()
+
 
 
