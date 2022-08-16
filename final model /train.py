@@ -4,12 +4,9 @@ import fasttext
 train_data = pd.read_csv("train_data.txt", sep=" :::", header=None, engine="python")
 train_data.columns = ['Id', 'Title', 'Genre', 'Desc.']
 train_data.drop(['Id', 'Desc.'], axis=1, inplace=True)
-#train_data.head()
 
 test_data = pd.read_csv("test_data_solution.txt", sep=" :::", header=None, names=['Id', 'Title', 'Genre', 'Desc.'], engine="python")
 test_data.drop(['Id', 'Desc.'], axis=1, inplace=True)
-#test_data.head()
-
 
 
 def preprocess_data(train, test):
@@ -62,30 +59,36 @@ def preprocess_data(train, test):
 
         return train, test
 
+
+def datafile(train_file, test_file):
+        train_file[['Genre', 'Title']].to_csv('train.txt', 
+                                                index = False, 
+                                                sep = ' ',
+                                                header = None, 
+                                                #quoting = csv.QUOTE_NONE, 
+                                                #quotechar = "", 
+                                                escapechar = " ")
+
+
+        test_file[['Genre','Title']].to_csv('test.txt', 
+                                        index = False, 
+                                        sep = ' ',
+                                        header = None, 
+                                        #quoting = csv.QUOTE_NONE, 
+                                        #quotechar = "", 
+                                        escapechar = " ")
+        
+        return train_file, test_file
+
+def Classification_Model():
+        model = fasttext.train_supervised('train.txt', autotuneValidationFile= 'test.txt')
+        model.test('test.txt')
+        model.save_model('model.bin')
+        return model
+
 preprocess_data(train_data, test_data)
+datafile(train_data, test_data)
 
-print(test_data)
-
-
-# train_data[['Genre', 'Title']].to_csv('train.txt', 
-#                                           index = False, 
-#                                           sep = ' ',
-#                                           header = None, 
-#                                           #quoting = csv.QUOTE_NONE, 
-#                                           #quotechar = "", 
-#                                           escapechar = " ")
+Classification_Model()
 
 
-# test_data[['Genre','Title']].to_csv('test.txt', 
-#                                      index = False, 
-#                                      sep = ' ',
-#                                      header = None, 
-#                                      #quoting = csv.QUOTE_NONE, 
-#                                      #quotechar = "", 
-#                                      escapechar = " ")
-
-# model = fasttext.train_supervised('train.txt', autotuneValidationFile= 'test.txt')
-
-# model.test('test.txt') 
-
-# model.save_model('model.bin')
