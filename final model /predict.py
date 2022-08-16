@@ -1,4 +1,3 @@
-from turtle import title
 import fasttext
 
 try:
@@ -8,12 +7,16 @@ try:
 except:
     pass
 
+#Loading trained model 
 model = fasttext.load_model("model.bin")
 
+#Function for prediction
 def predict(title):
     print(model.predict(title))
     return 
 
 #title1 = input("Please Enter movie name: ")
+#predict(title1)
+
 predict("Oscar  et  la  dame  rose")
 

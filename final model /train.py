@@ -1,15 +1,18 @@
+#Import Libraries
 import numpy as np, pandas as pd, re
 import fasttext
 
+#Training Data Prep.
 train_data = pd.read_csv("train_data.txt", sep=" :::", header=None, engine="python")
 train_data.columns = ['Id', 'Title', 'Genre', 'Desc.']
 train_data.drop(['Id', 'Desc.'], axis=1, inplace=True)
 
+#Test Data Prep.
 test_data = pd.read_csv("test_data_solution.txt", sep=" :::", header=None, names=['Id', 'Title', 'Genre', 'Desc.'], engine="python")
 test_data.drop(['Id', 'Desc.'], axis=1, inplace=True)
 
-
-def preprocess_data(train, test):
+#Function for Data Preprocessing
+def Preprocess_Data(train, test):
         def process_title(title):
                 """
                 function that extracts characters and numbers
@@ -59,14 +62,12 @@ def preprocess_data(train, test):
 
         return train, test
 
-
-def datafile(train_file, test_file):
-        train_file[['Genre', 'Title']].to_csv('train.txt', 
+#Fucntion for creating processed data files 
+def Create_Datafile(training_file, test_file):
+        training_file[['Genre', 'Title']].to_csv('train.txt', 
                                                 index = False, 
                                                 sep = ' ',
                                                 header = None, 
-                                                #quoting = csv.QUOTE_NONE, 
-                                                #quotechar = "", 
                                                 escapechar = " ")
 
 
@@ -74,22 +75,20 @@ def datafile(train_file, test_file):
                                         index = False, 
                                         sep = ' ',
                                         header = None, 
-                                        #quoting = csv.QUOTE_NONE, 
-                                        #quotechar = "", 
                                         escapechar = " ")
         
-        return train_file, test_file
+        return training_file, test_file
 
+#Function for Training & Saving Model
 def Classification_Model():
         model = fasttext.train_supervised('train.txt', lr=1.0, epoch=25, wordNgrams=2, bucket=200000, dim=50, loss='hs')
         model.test('test.txt')
         model.save_model('model.bin')
-        print(model.predict("johanna  und  der  buschpilot  der  weg  nach  afrika"))
         return model
 
-preprocess_data(train_data, test_data)
-datafile(train_data, test_data)
 
+Preprocess_Data(train_data, test_data)
+Create_Datafile(train_data, test_data)
 Classification_Model()
 
 
